@@ -1,0 +1,10 @@
+{
+  "id": "obsidian-link-parameter-remover",
+  "name": "Link Parameter Remover",
+  "version": "0.0.1",
+  "minAppVersion": "0.15.0",
+  "description": "Obsidian extension to remove parameters of defines domain links",
+  "author": "Vogaeael",
+  "authorUrl": "https://github.com/Vogaeael",
+  "isDesktopOnly": "false"
+}
