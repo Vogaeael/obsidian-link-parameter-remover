@@ -1,9 +1,15 @@
-import {Editor, Plugin, TFile} from 'obsidian';
+import {App, Editor, Plugin, PluginManifest, TFile} from 'obsidian';
 import {DEFAULT_SETTINGS, LinkParameterRemoverSettings, LinkParameterRemoverSettingTab} from "./src/settings";
+import LinkParameterRemover from "./src/link-parameter-remover";
 
+export default class LinkParameterRemoverPlugin extends Plugin {
+    public settings: LinkParameterRemoverSettings;
+    public linkParameterRemover: LinkParameterRemover;
 
-export default class LinkParameterRemover extends Plugin {
-    settings: LinkParameterRemoverSettings;
+    public constructor(app: App, manifest: PluginManifest) {
+        super(app, manifest);
+        this.linkParameterRemover = new LinkParameterRemover();
+    }
 
     public async onload(): Promise<void> {
         await this.loadSettingsAndAddSettingsTab();
@@ -24,8 +30,7 @@ export default class LinkParameterRemover extends Plugin {
                 const { vault } = this.app;
                 vault.getMarkdownFiles().map((file: TFile): void => {
                    vault.process(file, (content: string): string => {
-                       // @TODO remove parameters from links
-                       return content;
+                       return this.linkParameterRemover.removeParameter(content, this.settings.domains);
                    });
                 });
             }
@@ -47,13 +52,13 @@ export default class LinkParameterRemover extends Plugin {
             id: 'remove-parameter-from-link-selection',
             name: 'Remove parameter from link: selection',
             editorCheckCallback: (checking: boolean, editor: Editor): boolean => {
-                const selection: string = editor.getSelection();
+                let selection: string = editor.getSelection();
                 if (selection.length === 0) {
                     return false;
                 }
 
                 if (!checking) {
-                    // @TODO remove parameters from links
+                    selection = this.linkParameterRemover.removeParameter(selection, this.settings.domains);
                     editor.replaceSelection(selection);
                 }
 

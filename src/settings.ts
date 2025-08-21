@@ -1,5 +1,5 @@
 import {App, PluginSettingTab, Setting} from "obsidian";
-import LinkParameterRemover from "../main";
+import LinkParameterRemoverPlugin from "../main";
 
 export interface LinkParameterRemoverSettings {
     domains: string[];
@@ -10,9 +10,9 @@ export const DEFAULT_SETTINGS: LinkParameterRemoverSettings = {
 }
 
 export class LinkParameterRemoverSettingTab extends PluginSettingTab {
-    plugin: LinkParameterRemover;
+    private plugin: LinkParameterRemoverPlugin;
 
-    public constructor(app: App, plugin: LinkParameterRemover) {
+    public constructor(app: App, plugin: LinkParameterRemoverPlugin) {
         super(app, plugin);
         this.plugin = plugin;
     }
