@@ -1,5 +1,15 @@
-import {App, Editor, Plugin, PluginManifest, TFile} from 'obsidian';
-import {DEFAULT_SETTINGS, LinkParameterRemoverSettings, LinkParameterRemoverSettingTab} from "./src/settings";
+import {
+    App,
+    Editor,
+    Plugin,
+    PluginManifest,
+    TFile
+} from 'obsidian';
+import {
+    DEFAULT_SETTINGS,
+    LinkParameterRemoverSettings,
+    LinkParameterRemoverSettingTab
+} from "./src/settings";
 import LinkParameterRemover from "./src/link-parameter-remover";
 
 export default class LinkParameterRemoverPlugin extends Plugin {
