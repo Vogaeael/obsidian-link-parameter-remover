@@ -1,6 +1,6 @@
 import {
     App,
-    Editor,
+    Editor, MarkdownView,
     Plugin,
     PluginManifest,
     TFile
@@ -50,9 +50,10 @@ export default class LinkParameterRemoverPlugin extends Plugin {
             id: 'remove-parameter-from-link-focus',
             name: 'Remove parameter from link: focus',
             checkCallback: (checking: boolean): boolean => {
-                const file: TFile|null = this.app.workspace.getActiveFile();
+                const view: MarkdownView|null = this.app.workspace.getActiveViewOfType<MarkdownView>(MarkdownView);
+                const file: TFile|null|undefined = view?.file
 
-                if (file === null) {
+                if (!file) {
                     return false;
                 }
 
