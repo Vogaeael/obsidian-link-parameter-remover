@@ -49,11 +49,20 @@ export default class LinkParameterRemoverPlugin extends Plugin {
         this.addCommand({
             id: 'remove-parameter-from-link-focus',
             name: 'Remove parameter from link: focus',
-            editorCheckCallback: (checking: boolean, editor: Editor): boolean => {
-                // @TODO get focused file
-                // @TODO check if we have a focused file
-                // @TODO if we don't have one return false
-                // @TODO if we have one, do the change and then return true
+            checkCallback: (checking: boolean): boolean => {
+                const file: TFile|null = this.app.workspace.getActiveFile();
+
+                if (file === null) {
+                    return false;
+                }
+
+                if (!checking) {
+                    const { vault } = this.app;
+                    vault.process(file, (content: string): string => {
+                        return this.linkParameterRemover.removeParameter(content, this.settings.domains);
+                    });
+                }
+
                 return true;
             }
         });
