@@ -1,7 +1,7 @@
 {
   "name": "obsidian-link-parameter-remover",
-  "version": "0.0.1",
-  "description": "Obsidian extension to remove parameters of defines domain links",
+  "version": "1.0.0",
+  "description": "Obsidian extension to remove parameters of defined domain links.",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
