@@ -4,9 +4,15 @@ import {
     Setting
 } from "obsidian";
 import LinkParameterRemoverPlugin from "../main";
+import SettingsNormalizer from "./settings-normalizer";
+
+export type DomainSetting = {
+    domain: string;
+    parameters: string[];
+}
 
 export interface LinkParameterRemoverSettings {
-    domains: string[];
+    domains: DomainSetting[];
 }
 
 export const DEFAULT_SETTINGS: LinkParameterRemoverSettings = {
@@ -15,10 +21,12 @@ export const DEFAULT_SETTINGS: LinkParameterRemoverSettings = {
 
 export class LinkParameterRemoverSettingTab extends PluginSettingTab {
     private plugin: LinkParameterRemoverPlugin;
+    private settingsNormalizer: SettingsNormalizer;
 
-    public constructor(app: App, plugin: LinkParameterRemoverPlugin) {
+    public constructor(app: App, plugin: LinkParameterRemoverPlugin, settingsLoader: SettingsNormalizer) {
         super(app, plugin);
         this.plugin = plugin;
+        this.settingsNormalizer = settingsLoader;
     }
 
     public display(): void {
@@ -31,9 +39,9 @@ export class LinkParameterRemoverSettingTab extends PluginSettingTab {
             .setDesc('Domains where the parameters should be removed')
             .addTextArea(text => text
                 .setPlaceholder('Enter the domain')
-                .setValue(this.plugin.settings.domains.join('\n'))
-                .onChange(async(value) => {
-                    this.plugin.settings.domains = value.split('\n');
+                .setValue(this.settingsNormalizer.normalize(this.plugin.settings))
+                .onChange(async(value: string) => {
+                    this.plugin.settings = this.settingsNormalizer.denormalize(value);
                     await this.plugin.saveSettings();
                 }))
     }
