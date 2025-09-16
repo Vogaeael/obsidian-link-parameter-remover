@@ -1,15 +1,64 @@
-export default class LinkParameterRemover {
-    private PATH_PARAMETER_REGEX: string = '([-a-zA-Z0-9@:%_\\+.~#&\\/=]*)(\\?[-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)'
+import {DomainSetting, LinkParameterRemoverSettings} from "./settings";
 
-    public removeParameter(text: string, domains: string[]): string {
-        domains.forEach((domain: string) => {
-            const domainRegex: string = this.escapeRegex(domain);
-            const urlRegex: RegExp = new RegExp(domainRegex + this.PATH_PARAMETER_REGEX, 'g');
-            const matches: IterableIterator<RegExpMatchArray> = text.matchAll(urlRegex);
-            for (const match of matches) {
-                text = text.replace(match[0], domain + match[1]);
+export default class LinkParameterRemover {
+    private PATH_ALL_PARAMETER_REGEX: string = '([-a-zA-Z0-9@:%_\\+.~#&\\/=]*)(\\?[-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)'
+    private PATH_FIRST_PARAM_BEFORE: string = '([-a-zA-Z0-9@:%_\\+.~#&\\/=]*)(\\?';
+    private PATH_FIRST_PARAM_AFTER: string = '=[-a-zA-Z0-9@:%_\\+.~#?\\/=]*)(&)?([-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)';
+    private PATH_LATER_PARAM_BEFORE: string = '([-a-zA-Z0-9@:%_\\+.~#&\\/=]*)(\\?[-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)(&';
+    private PATH_LATER_PARAM_AFTER: string = '=[-a-zA-Z0-9@:%_\\+.~#?\\/\\/=]*)([-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)';
+
+    public removeParameter(text: string, settings: LinkParameterRemoverSettings): string {
+        settings.domains.forEach((domainSetting: DomainSetting) => {
+            if (domainSetting.parameters.length === 0) {
+                text = this.removeAllParameters(text, domainSetting);
+
+                return;
             }
+
+            text = this.removeSpecificParameters(text, domainSetting);
         });
+
+        return text;
+    }
+
+    private removeAllParameters(text: string, domainSetting: DomainSetting): string {
+        const domainRegex: string = this.escapeRegex(domainSetting.domain);
+        const urlRegex: RegExp = new RegExp(domainRegex + this.PATH_ALL_PARAMETER_REGEX, 'g');
+        const matches: IterableIterator<RegExpMatchArray> = text.matchAll(urlRegex);
+        for (const match of matches) {
+            text = text.replace(match[0], domainSetting.domain + match[1]);
+        }
+
+        return text;
+    }
+
+    private removeSpecificParameters(text: string, domainSetting: DomainSetting): string {
+        domainSetting.parameters.forEach((parameterKey: string): void => {
+            text = this.removeIfFirstParameter(text, domainSetting.domain, parameterKey);
+            text = this.removeIfLaterParameter(text, domainSetting.domain, parameterKey);
+        });
+
+        return text;
+    }
+
+    private removeIfFirstParameter(text: string, domain: string, param: string): string {
+        const domainRegex: string = this.escapeRegex(domain);
+        const urlRegex: RegExp = new RegExp(domainRegex + this.PATH_FIRST_PARAM_BEFORE + this.escapeRegex(param) + this.PATH_FIRST_PARAM_AFTER, 'g');
+        const matches: IterableIterator<RegExpMatchArray> = text.matchAll(urlRegex);
+        for (const match of matches) {
+            text = text.replace(match[0], domain + match[1] + '?' + match[4]);
+        }
+
+        return text;
+    }
+
+    private removeIfLaterParameter(text: string, domain: string, param: string): string {
+        const domainRegex: string = this.escapeRegex(domain);
+        const urlRegex: RegExp = new RegExp(domainRegex + this.PATH_LATER_PARAM_BEFORE + this.escapeRegex(param) + this.PATH_LATER_PARAM_AFTER, 'g');
+        const matches: IterableIterator<RegExpMatchArray> = text.matchAll(urlRegex);
+        for (const match of matches) {
+            text = text.replace(match[0], domain + match[1] + match[2] + match[4]);
+        }
 
         return text;
     }

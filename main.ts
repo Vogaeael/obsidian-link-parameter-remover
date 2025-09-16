@@ -11,14 +11,17 @@ import {
     LinkParameterRemoverSettingTab
 } from "./src/settings";
 import LinkParameterRemover from "./src/link-parameter-remover";
+import SettingsNormalizer from "./src/settings-normalizer";
 
 export default class LinkParameterRemoverPlugin extends Plugin {
     public settings: LinkParameterRemoverSettings;
-    public linkParameterRemover: LinkParameterRemover;
+    private linkParameterRemover: LinkParameterRemover;
+    private settingsNormalizer: SettingsNormalizer;
 
     public constructor(app: App, manifest: PluginManifest) {
         super(app, manifest);
         this.linkParameterRemover = new LinkParameterRemover();
+        this.settingsNormalizer = new SettingsNormalizer();
     }
 
     public async onload(): Promise<void> {
@@ -29,7 +32,7 @@ export default class LinkParameterRemoverPlugin extends Plugin {
 
     private async loadSettingsAndAddSettingsTab(): Promise<void> {
         await this.loadSettings();
-        this.addSettingTab(new LinkParameterRemoverSettingTab(this.app, this));
+        this.addSettingTab(new LinkParameterRemoverSettingTab(this.app, this, this.settingsNormalizer));
     }
 
     private addCommands(): void {
@@ -40,7 +43,7 @@ export default class LinkParameterRemoverPlugin extends Plugin {
                 const { vault } = this.app;
                 vault.getMarkdownFiles().map((file: TFile): void => {
                    vault.process(file, (content: string): string => {
-                       return this.linkParameterRemover.removeParameter(content, this.settings.domains);
+                       return this.linkParameterRemover.removeParameter(content, this.settings);
                    });
                 });
             }
@@ -60,7 +63,7 @@ export default class LinkParameterRemoverPlugin extends Plugin {
                 if (!checking) {
                     const { vault } = this.app;
                     vault.process(file, (content: string): string => {
-                        return this.linkParameterRemover.removeParameter(content, this.settings.domains);
+                        return this.linkParameterRemover.removeParameter(content, this.settings);
                     });
                 }
 
@@ -78,7 +81,7 @@ export default class LinkParameterRemoverPlugin extends Plugin {
                 }
 
                 if (!checking) {
-                    selection = this.linkParameterRemover.removeParameter(selection, this.settings.domains);
+                    selection = this.linkParameterRemover.removeParameter(selection, this.settings);
                     editor.replaceSelection(selection);
                 }
 
