@@ -10,7 +10,7 @@ export default class SettingsNormalizer {
         settings.domains.forEach((domainSetting: DomainSetting) => {
             let settingString = domainSetting.domain;
 
-            if (domainSetting.parameters.length > 0) {
+            if (domainSetting.parameters && domainSetting.parameters.length > 0) {
                 settingString += this.SEPARATOR + domainSetting.parameters.join(this.DOMAIN_SEPARATOR);
             }
 

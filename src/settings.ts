@@ -43,6 +43,6 @@ export class LinkParameterRemoverSettingTab extends PluginSettingTab {
                 .onChange(async(value: string) => {
                     this.plugin.settings = this.settingsNormalizer.denormalize(value);
                     await this.plugin.saveSettings();
-                }))
+                }));
     }
 }
