@@ -9,6 +9,7 @@ import SettingsNormalizer from "./settings-normalizer";
 export type DomainSetting = {
     domain: string;
     parameters: string[];
+    keep: boolean;
 }
 
 export interface LinkParameterRemoverSettings {
