@@ -26,7 +26,11 @@ export default class LinkParameterRemover {
         const urlRegex: RegExp = new RegExp(domainRegex + this.PATH_ALL_PARAMETER_REGEX, 'g');
         const matches: IterableIterator<RegExpMatchArray> = text.matchAll(urlRegex);
         for (const match of matches) {
-            text = text.replace(match[0], domainSetting.domain + match[1]);
+            const searchValue: string = match[0];
+            const replaceValue: string = domainSetting.domain + match[1];
+            if (searchValue !== replaceValue) {
+                text = text.replace(match[0], domainSetting.domain + match[1]);
+            }
         }
 
         return text;
@@ -46,7 +50,11 @@ export default class LinkParameterRemover {
         const urlRegex: RegExp = new RegExp(domainRegex + this.PATH_FIRST_PARAM_BEFORE + this.escapeRegex(param) + this.PATH_FIRST_PARAM_AFTER, 'g');
         const matches: IterableIterator<RegExpMatchArray> = text.matchAll(urlRegex);
         for (const match of matches) {
-            text = text.replace(match[0], domain + match[1] + '?' + match[4]);
+            const searchValue: string = match[0];
+            const replaceValue: string = domain + match[1] + '?' + match[4];
+            if (searchValue !== replaceValue) {
+                text = text.replace(match[0], domain + match[1] + '?' + match[4]);
+            }
         }
 
         return text;
@@ -57,7 +65,11 @@ export default class LinkParameterRemover {
         const urlRegex: RegExp = new RegExp(domainRegex + this.PATH_LATER_PARAM_BEFORE + this.escapeRegex(param) + this.PATH_LATER_PARAM_AFTER, 'g');
         const matches: IterableIterator<RegExpMatchArray> = text.matchAll(urlRegex);
         for (const match of matches) {
-            text = text.replace(match[0], domain + match[1] + match[2] + match[4]);
+            const searchValue: string = match[0];
+            const replaceValue: string = domain + match[1] + match[2] + match[4];
+            if (searchValue !== replaceValue) {
+                text = text.replace(match[0], domain + match[1] + match[2] + match[4]);
+            }
         }
 
         return text;
