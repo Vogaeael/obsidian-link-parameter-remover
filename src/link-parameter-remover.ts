@@ -29,7 +29,7 @@ export default class LinkParameterRemover {
             const searchValue: string = match[0];
             const replaceValue: string = domainSetting.domain + match[1];
             if (searchValue !== replaceValue) {
-                text = text.replace(match[0], domainSetting.domain + match[1]);
+                text = text.replace(searchValue, replaceValue);
             }
         }
 
@@ -53,7 +53,7 @@ export default class LinkParameterRemover {
             const searchValue: string = match[0];
             const replaceValue: string = domain + match[1] + '?' + match[4];
             if (searchValue !== replaceValue) {
-                text = text.replace(match[0], domain + match[1] + '?' + match[4]);
+                text = text.replace(searchValue, replaceValue);
             }
         }
 
@@ -68,7 +68,7 @@ export default class LinkParameterRemover {
             const searchValue: string = match[0];
             const replaceValue: string = domain + match[1] + match[2] + match[4];
             if (searchValue !== replaceValue) {
-                text = text.replace(match[0], domain + match[1] + match[2] + match[4]);
+                text = text.replace(searchValue, replaceValue);
             }
         }
 
