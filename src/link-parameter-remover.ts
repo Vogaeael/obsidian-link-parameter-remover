@@ -10,7 +10,7 @@ export default class LinkParameterRemover {
     public removeParameter(text: string, settings: LinkParameterRemoverSettings): string {
         settings.domains.forEach((domainSetting: DomainSetting) => {
             if (domainSetting.parameters.length === 0) {
-                text = this.removeAllParameters(text, domainSetting);
+                text = this.removeAllParameters(text, domainSetting.domain);
 
                 return;
             }
@@ -21,13 +21,13 @@ export default class LinkParameterRemover {
         return text;
     }
 
-    private removeAllParameters(text: string, domainSetting: DomainSetting): string {
-        const domainRegex: string = this.escapeRegex(domainSetting.domain);
+    private removeAllParameters(text: string, domain: string): string {
+        const domainRegex: string = this.escapeRegex(domain);
         const urlRegex: RegExp = new RegExp(domainRegex + this.PATH_ALL_PARAMETER_REGEX, 'g');
         const matches: IterableIterator<RegExpMatchArray> = text.matchAll(urlRegex);
         for (const match of matches) {
             const searchValue: string = match[0];
-            const replaceValue: string = domainSetting.domain + match[1];
+            const replaceValue: string = domain + match[1];
             if (searchValue !== replaceValue) {
                 text = text.replace(searchValue, replaceValue);
             }
