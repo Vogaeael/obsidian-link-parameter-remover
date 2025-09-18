@@ -11,7 +11,9 @@ export default class SettingsNormalizer {
             let settingString = domainSetting.domain;
 
             if (domainSetting.parameters && domainSetting.parameters.length > 0) {
-                settingString += this.SEPARATOR + domainSetting.parameters.join(this.DOMAIN_SEPARATOR);
+                const keepString: string = domainSetting.keep ? '+' : '-';
+                const parameterString: string = domainSetting.parameters.join(this.DOMAIN_SEPARATOR);
+                settingString = [settingString, parameterString, keepString].join(this.SEPARATOR);
             }
 
             settingsLines.push(settingString)
@@ -30,10 +32,15 @@ export default class SettingsNormalizer {
             if (parts.length > 1) {
                 parameters = parts[1].split(this.DOMAIN_SEPARATOR);
             }
+            let keep: boolean = false;
+            if (parts.length > 2 && parts[2].trim() === '+') {
+                keep = true;
+            }
 
             linkParameterRemoverSettings.domains.push({
                 domain: parts[0],
                 parameters: parameters,
+                keep: keep,
             });
         });
 
