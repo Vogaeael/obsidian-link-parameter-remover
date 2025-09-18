@@ -67,7 +67,7 @@ export default class LinkParameterRemover {
                 });
             }
             let replaceValue: string = domain + match[1];
-            if (params.length > 0) {
+            if (foundParams.length > 0) {
                 replaceValue += '?' + foundParams.join('&');
             }
             if (searchValue !== replaceValue) {
@@ -84,7 +84,10 @@ export default class LinkParameterRemover {
         const matches: IterableIterator<RegExpMatchArray> = text.matchAll(urlRegex);
         for (const match of matches) {
             const searchValue: string = match[0];
-            const replaceValue: string = domain + match[1] + '?' + match[4];
+            let replaceValue: string = domain + match[1];
+            if (match[4].length > 0) {
+                replaceValue += '?' + match[4];
+            }
             if (searchValue !== replaceValue) {
                 text = text.replace(searchValue, replaceValue);
             }
