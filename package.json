@@ -13,7 +13,10 @@
     "obsidian",
     "obsidian-plugin"
   ],
-  "author": "Vogaeael",
+  "author": {
+    "name": "Michael Vogel",
+    "email": "Michael-B-G-Vogel@gmx.de"
+  },
   "license": "LGPL-2.1-only",
   "devDependencies": {
     "@types/jest": "^30.0.0",
